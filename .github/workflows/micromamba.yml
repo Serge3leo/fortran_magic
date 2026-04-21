@@ -43,7 +43,7 @@ jobs:
         id: date
         run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
 
-      - uses: mamba-org/setup-micromamba@v1
+      - uses: mamba-org/setup-micromamba@v3
         env:
           CACHE_NUMBER: 0  # modify to reset cache manually
         with:
