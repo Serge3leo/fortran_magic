@@ -10,7 +10,7 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   build:
     strategy:
-      fail-fast: false  # true
+      fail-fast: true
       matrix:
         os: ["macos", "ubuntu", "windows"]
         # PEP 790: 3.15.0 beta 1: Tuesday, 2026-05-05
@@ -130,7 +130,7 @@ jobs:
             print(a)
             '
 
-          # if pkg-config --exists blas && pkg-config --exists lapack; then
+          if pkg-config --exists blas && pkg-config --exists lapack; then
             python -m numpy.f2py --backend meson --verbose \
               -c tests/solve.f90 -m solve $ld_lapack
             python -c 'if 1:
@@ -143,10 +143,10 @@ jobs:
               print(x)
               np.testing.assert_allclose(x, np.linalg.solve(A, b))
               '
-          # else
-          #   echo "Skipping LAPACK precheck (blas/lapack not found via" \
-          #     "pkg-config)."
-          # fi
+          else
+            echo "Skipping LAPACK precheck (blas/lapack not found via" \
+              "pkg-config)."
+          fi
 
       - name: Test with pytest
         run: |
