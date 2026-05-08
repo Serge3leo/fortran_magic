@@ -112,11 +112,8 @@ jobs:
           echo "meson:     " ; meson -v
           echo "ninja:     " ; ninja --version
           cmake --version
-          echo "pkg-config:" ; pkg-config --version
 
-          pkg-config --list-all
-
-          ld_lapack="--dep lapack --dep blas"
+          ld_lapack="--dep lapack"
 
           python -m numpy.f2py --backend meson --verbose -c tests/fib1.f -m fib1
           python -c 'if 1:
@@ -128,9 +125,8 @@ jobs:
             print(a)
             '
 
-          if pkg-config --exists blas && pkg-config --exists lapack; then
-            python -m numpy.f2py --backend meson --verbose \
-              -c tests/solve.f90 -m solve $ld_lapack
+          if python -m numpy.f2py --backend meson --verbose \
+                                  -c tests/solve.f90 -m solve $ld_lapack; then
             python -c 'if 1:
               from solve import solve
               import numpy as np
@@ -142,8 +138,8 @@ jobs:
               np.testing.assert_allclose(x, np.linalg.solve(A, b))
               '
           else
-            echo "Skipping LAPACK precheck (blas/lapack not found via" \
-              "pkg-config)."
+            echo "Skipping LAPACK precheck (lapack not found via" \
+                  "numpy.f2py $ld_lapack)."
           fi
 
       - name: Test with pytest

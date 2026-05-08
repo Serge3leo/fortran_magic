@@ -20,7 +20,7 @@ import pytest
 from jupyter_client.manager import start_new_kernel
 from nbconvert.preprocessors import ExecutePreprocessor
 
-pytestmark = [pytest.mark.requires_fortran, pytest.mark.requires_blas]
+pytestmark = [pytest.mark.requires_fortran, pytest.mark.requires_lapack]
 
 DTE_FAST = "fast"
 DTE_MEDIUM = "_medium"  # No `DTE_TAGS`
@@ -94,6 +94,8 @@ class SkipExecutePreprocessor(ExecutePreprocessor):
 
 def documentation_testing_engine(tags, verbose) -> None:
     """Calculation & comparison selected subset of cells."""
+
+    print("documentation_testing_engine", file=sys.stderr)
 
     global DTE_TESTED
 
@@ -187,6 +189,7 @@ def test_documentation_slow(verbose) -> None:
 
     This test skipped by `-m 'not slow'` or `-m fast`."""
 
+    print("test_documentation_slow", file=sys.stderr)
     documentation_testing_engine({DTE_SLOW, DTE_MEDIUM, DTE_FAST}, verbose)
 
 
@@ -199,6 +202,7 @@ def test_documentation_medium(verbose) -> None:
     Really working if `DTE_TESTED` empty.
     """
 
+    print("test_documentation_medium", file=sys.stderr)
     documentation_testing_engine({DTE_MEDIUM, DTE_FAST}, verbose)
 
 
@@ -211,4 +215,5 @@ def test_documentation_fast(verbose) -> None:
     Really working if `DTE_TESTED` empty.
     """
 
+    print("test_documentation_fast", file=sys.stderr)
     documentation_testing_engine({DTE_FAST}, verbose)
