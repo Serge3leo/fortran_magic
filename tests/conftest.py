@@ -29,13 +29,14 @@ _FORTRAN_COMPILERS = (
 )
 _FORTRAN_COMPILER = next((compiler for compiler in _FORTRAN_COMPILERS if shutil.which(compiler)), None)
 
+print("XXXXX>>>>> Detect _HAS_LAPACK", file=sys.stderr)
 _HAS_LAPACK = (
     subprocess.run(
-        [sys.executable, "-m", "numpy.f2py", "--dep=lapack", "-c", "-m", "solve", "tests/solve.f90"],
-        check=False,
+        [sys.executable, "-m", "numpy.f2py", "--dep=lapack", "-c", "-m", "solve", "tests/solve.f90"], check=False
     ).returncode
     == 0
 )
+print(f"XXXXX>>>>> _HAS_LAPACK={_HAS_LAPACK}", file=sys.stderr)
 
 
 @pytest.fixture(scope="session", autouse=True)

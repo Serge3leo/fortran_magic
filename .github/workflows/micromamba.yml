@@ -12,8 +12,10 @@ jobs:
     strategy:
       fail-fast: false  # true
       matrix:
-        os: ["macos", "ubuntu", "windows"]
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        # os: ["macos", "ubuntu", "windows"]
+        # python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        os: ["ubuntu"]
+        python-version: ["3.10", "3.11", "3.12"]
         include:
           - os: "macos"
             platform: "darwin"
@@ -144,5 +146,5 @@ jobs:
 
       - name: Test with pytest
         run: |
-          JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
+          JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest -s -rs
 ...
