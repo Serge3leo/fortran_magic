@@ -52,8 +52,8 @@ jobs:
           environment-file: tests/base-environment.yml
           create-args: >-
             python=${{ matrix.python-version }} ${{ matrix.os_pkgs }}
-          cache-environment: false
-          cache-downloads: false
+          cache-environment: true
+          cache-downloads: true
 
       - name: Configure pkg-config path
         run: |

@@ -30,12 +30,16 @@ _FORTRAN_COMPILERS = (
 _FORTRAN_COMPILER = next((compiler for compiler in _FORTRAN_COMPILERS if shutil.which(compiler)), None)
 
 print("XXXXX>>>>> Detect _HAS_LAPACK", file=sys.stderr)
-_HAS_LAPACK = (
+try:
     subprocess.run(
-        [sys.executable, "-m", "numpy.f2py", "--dep=lapack", "-c", "-m", "solve", "tests/solve.f90"], check=False
-    ).returncode
-    == 0
-)
+        [sys.executable, "-m", "numpy.f2py", "--dep=lapack", "-c", "-m", "detect_lapack", "tests/solve.f90"], check=True
+    )
+    import detect_lapack
+
+    assert detect_lapack.solve.__doc__
+    _HAS_LAPACK = True
+except Exception:  # noqa: BLE001
+    _HAS_LAPACK = False
 print(f"XXXXX>>>>> _HAS_LAPACK={_HAS_LAPACK}", file=sys.stderr)
 
 
