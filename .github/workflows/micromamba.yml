@@ -56,15 +56,11 @@ jobs:
           cache-downloads: true
 
       - name: Workaround configure pkg-config path
+        if: ${{ matrix.platform == 'win32' }}
         run: |
-          pkg-config --version
-          echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-          pkg-config --list-all
-          #PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
-          #$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-          #echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-          #pkg-config --list-all
-          #echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
+          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
+          $CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: Lint with ruff & yamllint
         run: |
@@ -130,6 +126,9 @@ jobs:
           echo "meson:     " ; meson -v
           echo "ninja:     " ; ninja --version
           cmake --version
+          echo "pkg-config:" ; pkg-config --version
+
+          pkg-config --list-all
 
           ld_lapack="--dep lapack"
 
@@ -143,8 +142,12 @@ jobs:
             print(a)
             '
 
-          if python -m numpy.f2py --backend meson --verbose \
-                                  -c tests/solve.f90 -m solve $ld_lapack; then
+          python -m numpy.f2py --verbose --help-link blas
+          python -m numpy.f2py --verbose --help-link lapack
+
+          if pkg-config --exists blas && pkg-config --exists lapack; then
+            python -m numpy.f2py --backend meson --verbose \
+              -c tests/solve.f90 -m solve $ld_lapack
             python -c 'if 1:
               from solve import solve
               import numpy as np
@@ -156,11 +159,11 @@ jobs:
               np.testing.assert_allclose(x, np.linalg.solve(A, b))
               '
           else
-            echo "Skipping LAPACK precheck (lapack not found via" \
-                  "numpy.f2py $ld_lapack)."
+            echo "Skipping LAPACK precheck (blas/lapack not found via" \
+              "pkg-config)."
           fi
 
       - name: Test with pytest
         run: |
-          JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest -s -rs
+          JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
 ...
