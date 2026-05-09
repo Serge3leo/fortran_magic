@@ -19,7 +19,7 @@ jobs:
             platform: "darwin"
             os_pkgs: "fortran-compiler"
 
-          - os: "macos-26-intel"
+          - os: "macos-15-intel"
             platform: "darwin-intel"
             python-version: "3.14"
             os_pkgs: "fortran-compiler"
