@@ -203,7 +203,7 @@ def test_syntax_error(ctxish, numpy_correct_compilers) -> None:
         ),
     ],
 )
-@pytest.mark.requires_lapack
+@pytest.mark.requires_blas
 def test_link_extra(ctxish, f_config_arg, fortran_arg) -> None:
     """
     `--extra` and `--link` flags from `%fortran_config` and

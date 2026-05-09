@@ -60,11 +60,11 @@ jobs:
           pkg-config --version
           echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
           pkg-config --list-all
-          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
-          $CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-          echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-          pkg-config --list-all
-          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
+          #PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
+          #$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+          #echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+          #pkg-config --list-all
+          #echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: Lint with ruff & yamllint
         run: |

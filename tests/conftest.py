@@ -28,19 +28,17 @@ _FORTRAN_COMPILERS = (
     "g95",
 )
 _FORTRAN_COMPILER = next((compiler for compiler in _FORTRAN_COMPILERS if shutil.which(compiler)), None)
+_PKG_CONFIG = shutil.which("pkg-config")
 
-print("XXXXX>>>>> Detect _HAS_LAPACK", file=sys.stderr)
-try:
-    subprocess.run(
-        [sys.executable, "-m", "numpy.f2py", "--dep=lapack", "-c", "-m", "detect_lapack", "tests/solve.f90"], check=True
-    )
-    import detect_lapack
 
-    assert detect_lapack.solve.__doc__
-    _HAS_LAPACK = True
-except Exception:  # noqa: BLE001
-    _HAS_LAPACK = False
-print(f"XXXXX>>>>> _HAS_LAPACK={_HAS_LAPACK}", file=sys.stderr)
+def _pkg_config_exists(name):
+    if _PKG_CONFIG is None:
+        return False
+    return subprocess.run([_PKG_CONFIG, "--exists", name], check=False).returncode == 0
+
+
+_HAS_BLAS = _pkg_config_exists("blas")
+_HAS_LAPACK = _pkg_config_exists("lapack")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -60,7 +58,7 @@ def pytest_configure(config) -> None:
 
     sys.path.insert(0, os.getcwd())
     config.addinivalue_line("markers", "requires_fortran: requires a working Fortran compiler")
-    config.addinivalue_line("markers", "requires_lapack: requires LAPACK")
+    config.addinivalue_line("markers", "requires_blas: requires pkg-config BLAS/LAPACK entries")
 
 
 def pytest_collection_modifyitems(config, items) -> None:
@@ -69,16 +67,16 @@ def pytest_collection_modifyitems(config, items) -> None:
         for item in items:
             if "requires_fortran" in item.keywords:
                 item.add_marker(skip)
-    if not _HAS_LAPACK:
-        skip = pytest.mark.skip(reason="LAPACK not found via numpy.f2py --dep")
+    if not (_HAS_BLAS and _HAS_LAPACK):
+        skip = pytest.mark.skip(reason="BLAS/LAPACK not found via pkg-config")
         for item in items:
-            if "requires_lapack" in item.keywords:
+            if "requires_blas" in item.keywords:
                 item.add_marker(skip)
 
 
 @pytest.fixture(scope="session")
-def has_lapack():
-    return _HAS_LAPACK
+def has_blas_lapack():
+    return _HAS_BLAS and _HAS_LAPACK
 
 
 @pytest.fixture(scope="session")
