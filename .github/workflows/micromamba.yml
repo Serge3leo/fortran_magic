@@ -60,16 +60,10 @@ jobs:
           pkg-config --version
           echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
           pkg-config --list-all
-          [ -d "$CONDA_PREFIX/lib/pkgconfig" ] && {
-            PKG_CONFIG_PATH="$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-            echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-            pkg-config --list-all
-          }
-          [ -d "$CONDA_PREFIX/lib/Library/pkgconfig" ] && {
-          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:$PKG_CONFIG_PATH"
-            echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
-            pkg-config --list-all
-          }
+          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
+          $CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+          echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+          pkg-config --list-all
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: Lint with ruff & yamllint
@@ -84,25 +78,25 @@ jobs:
 
       - name: Workaround conda pkg-config BLAS/LAPACK
         run: |
-          mkl_sdl_dir="`pkg-config --variable=pcfiledir mkl-sdl`"
-          if [ ! -d "$mkl_sdl_dir" ]; then
-            echo "Don't have mkl-sdl (mkl_sdl_dir=$mkl_sdl_dir)"
-          else
-            mkl_sdl="$mkl_sdl/mkl-sdl.pc"
+          if pkg-config --exists mkl-sdl; then
+            mkl_sdl_dir="`pkg-config --variable=pcfiledir mkl-sdl`"
+            mkl_sdl="$mkl_sdl_dir/mkl-sdl.pc"
             if pkg-config --exists blas; then
               echo "Have blas in `pkg-config --variable=pcfiledir blas`"
             else
-              blas="$mkl_sdl/blas.pc"
+              blas="$mkl_sdl_dir/blas.pc"
               echo "Use: $mkl_sdl as $blas"
               cp "$mkl_sdl" "$blas"
             fi
             if pkg-config --exists lapack; then
               echo "Have lapack in `pkg-config --variable=pcfiledir lapack`"
             else
-              lapack="$mkl_sdl/lapack.pc"
+              lapack="$mkl_sdl_dir/lapack.pc"
               echo "Use: $mkl_sdl as $lapack"
               cp "$mkl_sdl" "$lapack"
             fi
+          else
+            echo "Don't have mkl-sdl"
           fi
 
       - name: f2py workaround  # https://github.com/numpy/numpy/issues/26107
