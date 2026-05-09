@@ -12,28 +12,28 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ["macos", "ubuntu", "windows"]
-        python-version: ["3.10", "3.12", "3.13", "3.14"]
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         include:
-          - os: "macos"
+          - os: "macos-latest"
             platform: "darwin"
             os_pkgs: "fortran-compiler"
 
-          - os: "macos-15-intel"
+          - os: "macos-26-intel"
             platform: "darwin-intel"
             python-version: "3.14"
             os_pkgs: "fortran-compiler"
 
-          - os: "ubuntu"
+          - os: "ubuntu-latest"
             platform: "linux"
             os_pkgs: "mkl-devel"
 
-          - os: "windows"
+          - os: "windows-latest"
             platform: "win32"
             os_pkgs: "m2w64-gcc-fortran mkl-devel"
 
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -el {0}
