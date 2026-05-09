@@ -91,27 +91,6 @@ jobs:
             echo "Don't have mkl-sdl"
           fi
 
-      - name: f2py workaround  # https://github.com/numpy/numpy/issues/26107
-        run: |
-          npv=`python -m numpy.f2py -v`
-          if [ "$npv" "<" "2" ]; then
-            ff=`python -c "import numpy.f2py; print(numpy.f2py.__file__)"`
-            mbt=`dirname $ff`/_backends/meson.build.template
-            mv "$mbt" "$mbt".orig
-            cp "$mbt".orig "$mbt"
-            sed \
-              -e "/import('python').find_installation(/s/'\${python}', //" \
-              -i -- "$mbt"
-            if diff -w -u "$mbt".orig "$mbt" ; then
-              echo "FAIL: Workaround patch"
-              exit 2
-            else
-              echo "OK: Workaround patch"
-            fi
-          else
-            echo "Workaround don't needed"
-          fi
-
       - name: Precheck f2py
         run: |
           echo "python: " ; python --version
