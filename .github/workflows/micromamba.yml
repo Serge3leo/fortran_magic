@@ -55,27 +55,22 @@ jobs:
           cache-environment: true
           cache-downloads: true
 
-      - name: Configure pkg-config path
+      - name: Workaround configure pkg-config path
         run: |
           pkg-config --version
-          [ -d "$CONDA_PREFIX/Library/lib/pkgconfig" ] && {
-            echo "Has $CONDA_PREFIX/Library/lib/pkgconfig"
-          }
-          echo "Debug PKG_CONFIG_PATH=$CONDA_PREFIX/Library/lib/pkgconfig"
-          env "PKG_CONFIG_PATH=$CONDA_PREFIX/Library/lib/pkgconfig" \
-            pkg-config --list-all
+          echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+          pkg-config --list-all
           [ -d "$CONDA_PREFIX/lib/pkgconfig" ] && {
-            echo "Has $CONDA_PREFIX/lib/pkgconfig"
-          }
-          echo "Debug PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig"
-          env "PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig" \
+            PKG_CONFIG_PATH="$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+            echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
             pkg-config --list-all
-          if [ "${{ matrix.platform }}" = "win32" ]; then
-            pkgconfig_path="$CONDA_PREFIX/Library/lib/pkgconfig"
-          else
-            pkgconfig_path="$CONDA_PREFIX/lib/pkgconfig"
-          fi
-          echo "PKG_CONFIG_PATH=$pkgconfig_path" >> "$GITHUB_ENV"
+          }
+          [ -d "$CONDA_PREFIX/lib/Library/pkgconfig" ] && {
+          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:$PKG_CONFIG_PATH"
+            echo "Debug PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+            pkg-config --list-all
+          }
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: Lint with ruff & yamllint
         run: |
@@ -89,23 +84,26 @@ jobs:
 
       - name: Workaround conda pkg-config BLAS/LAPACK
         run: |
-          mkl_sdl="$PKG_CONFIG_PATH/mkl-sdl.pc"
+          mkl_sdl="`pkg-config --path mkl-sdl`"
           if [ ! -f "$mkl_sdl" ]; then
             echo "Don't have $mkl_sdl"
           else
-            blas="$PKG_CONFIG_PATH/blas.pc"
-            lapack="$PKG_CONFIG_PATH/lapack.pc"
+            pkg_path0=`expr "$PKG_CONFIG_PATH" : "\([^:]*\)"`
+            blas="`pkg-config --path blas`"
+            lapack="`pkg-config --path lapack`"
             if [ -f "$blas" ]; then
               echo "Have $blas"
             else
+              blas="$pkg_path0/blas.pc"
               echo "Use: $mkl_sdl as $blas"
-              cp -n "$mkl_sdl" "$blas"
+              cp "$mkl_sdl" "$blas"
             fi
             if [ -f "$lapack" ]; then
               echo "Have $lapack"
             else
+              lapack="$pkg_path0/lapack.pc"
               echo "Use: $mkl_sdl as $lapack"
-              cp -n "$mkl_sdl" "$lapack"
+              cp "$mkl_sdl" "$lapack"
             fi
           fi
 
