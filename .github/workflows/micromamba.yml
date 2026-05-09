@@ -101,6 +101,12 @@ jobs:
               cp "$lapack" "$blas"
             fi
           else
+            echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+            pkg-config --list-all | grep mkl
+            pkg-config --exists mkl || echo "$? of pkg-config --exists mkl"
+            pkg-config --exists mkl-sdl || echo "$? of ...--exists mkl-sdl"
+            pkg-config --list-all | grep lapack
+            pkg-config --exists lapack || echo "$? of ...--exists lapack"
             echo "Don't have lapack and mkl-sdl"
           fi
 
@@ -115,6 +121,7 @@ jobs:
           echo "ninja:     " ; ninja --version
           cmake --version
           echo "pkg-config:" ; pkg-config --version
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
 
           pkg-config --list-all
 
