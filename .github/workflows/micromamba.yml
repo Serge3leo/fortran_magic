@@ -80,18 +80,28 @@ jobs:
               echo "Have blas in `pkg-config --variable=pcfiledir blas`"
             else
               blas="$mkl_sdl_dir/blas.pc"
-              echo "Use: $mkl_sdl as $blas"
+              echo "Hack, use: $mkl_sdl as $blas"
               cp "$mkl_sdl" "$blas"
             fi
             if pkg-config --exists lapack; then
               echo "Have lapack in `pkg-config --variable=pcfiledir lapack`"
             else
               lapack="$mkl_sdl_dir/lapack.pc"
-              echo "Use: $mkl_sdl as $lapack"
+              echo "Hack, use: $mkl_sdl as $lapack"
               cp "$mkl_sdl" "$lapack"
             fi
+          elif pkg-config --exists lapack; then
+            lapack_dir="`pkg-config --variable=pcfiledir lapack`"
+            lapack="$lapack_dir/lapack.pc"
+            if pkg-config --exists blas; then
+              echo "Have blas in `pkg-config --variable=pcfiledir blas`"
+            else
+              blas="$lapack_dir/blas.pc"
+              echo "Hack, use: $lapack as $blas"
+              cp "$lapack" "$blas"
+            fi
           else
-            echo "Don't have mkl-sdl"
+            echo "Don't have lapack and mkl-sdl"
           fi
 
       - name: Precheck f2py
