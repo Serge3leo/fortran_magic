@@ -19,6 +19,11 @@ jobs:
             platform: "darwin"
             os_pkgs: "fortran-compiler"
 
+          - os: "macos-26-intel"
+            platform: "darwin-intel"
+            python-version: "3.14"
+            os_pkgs: "fortran-compiler"
+
           - os: "ubuntu"
             platform: "linux"
             os_pkgs: "mkl-devel"
@@ -34,7 +39,7 @@ jobs:
         shell: bash -el {0}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Get current date
         id: date
