@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.1 / 2026-05-10
+
+- Python 3.15 ready (CI tests for 3.15.0b1 or above).
+- Docs: the issue of migration to free-threading Python is described (use the
+  `--freethreading-compatible` option).
+- Docs: `meson` semantics of the `--link` option is described.
+- CI: bump version of `checkout@v6` and `setup-micromamba@v3` (upgrade to Node
+  24).
+- CI: cache `micromamba` and `uv`.
+- CI: add configuration files for optional pre-commit checks.
+- Tests: don't skip `test_documentation_ipynb.py` for `ubuntu-latest` and
+  `windows-latest`.
+- Tests: repair irrelevant warnings about GIL.
+
 ## 1.0 / 2025-12-24
 
 - Switch packaging to `pyproject.toml` with Hatchling and embed pytest config.
