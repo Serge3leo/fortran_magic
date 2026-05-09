@@ -84,24 +84,22 @@ jobs:
 
       - name: Workaround conda pkg-config BLAS/LAPACK
         run: |
-          mkl_sdl="`pkg-config --path mkl-sdl`"
-          if [ ! -f "$mkl_sdl" ]; then
-            echo "Don't have $mkl_sdl"
+          mkl_sdl_dir="`pkg-config --variable=pcfiledir mkl-sdl`"
+          if [ ! -d "$mkl_sdl_dir" ]; then
+            echo "Don't have mkl-sdl (mkl_sdl_dir=$mkl_sdl_dir)"
           else
-            pkg_path0=`expr "$PKG_CONFIG_PATH" : "\([^:]*\)"`
-            blas="`pkg-config --path blas`"
-            lapack="`pkg-config --path lapack`"
-            if [ -f "$blas" ]; then
-              echo "Have $blas"
+            mkl_sdl="$mkl_sdl/mkl-sdl.pc"
+            if pkg-config --exists blas; then
+              echo "Have blas in `pkg-config --variable=pcfiledir blas`"
             else
-              blas="$pkg_path0/blas.pc"
+              blas="$mkl_sdl/blas.pc"
               echo "Use: $mkl_sdl as $blas"
               cp "$mkl_sdl" "$blas"
             fi
-            if [ -f "$lapack" ]; then
-              echo "Have $lapack"
+            if pkg-config --exists lapack; then
+              echo "Have lapack in `pkg-config --variable=pcfiledir lapack`"
             else
-              lapack="$pkg_path0/lapack.pc"
+              lapack="$mkl_sdl/lapack.pc"
               echo "Use: $mkl_sdl as $lapack"
               cp "$mkl_sdl" "$lapack"
             fi
