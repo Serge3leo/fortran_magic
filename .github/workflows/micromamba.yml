@@ -10,7 +10,7 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   build:
     strategy:
-      fail-fast: false  # true
+      fail-fast: true
       matrix:
         # os: ["macos", "ubuntu", "windows"]
         # python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
@@ -27,7 +27,7 @@ jobs:
 
           - os: "windows"
             platform: "win32"
-            os_pkgs: "m2w64-gcc-fortran mkl"
+            os_pkgs: "m2w64-gcc-fortran mkl-sdl"
 
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
@@ -58,8 +58,8 @@ jobs:
       - name: Workaround configure pkg-config path
         if: ${{ matrix.platform == 'win32' }}
         run: |
-          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig:\
-          $CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig;\
+          $CONDA_PREFIX/lib/pkgconfig;$PKG_CONFIG_PATH"
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: Lint with ruff & yamllint
