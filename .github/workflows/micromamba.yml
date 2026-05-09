@@ -7,6 +7,10 @@ on:  # yamllint disable-line rule:truthy
   pull_request:
     branches: ['*']
 
+env:
+  python_beta: "3.15"  # Latest pre-release version for beta tests, see logs
+  python_beta_on: "3.14"
+
 jobs:
   build:
     strategy:
@@ -21,8 +25,8 @@ jobs:
 
           - os: "macos-26-intel"
             platform: "darwin-intel"
-            python-version: "3.14"
             os_pkgs: "fortran-compiler"
+            python-version: "3.14"
 
           - os: "ubuntu-latest"
             platform: "linux"
@@ -41,10 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
-
       - uses: mamba-org/setup-micromamba@v3
         env:
           CACHE_NUMBER: 0  # modify to reset cache manually
@@ -57,6 +57,9 @@ jobs:
             python=${{ matrix.python-version }} ${{ matrix.os_pkgs }}
           cache-environment: true
           cache-downloads: true
+
+      - name: Setup `uv` with caches by default
+        uses: astral-sh/setup-uv@8.1.0
 
       - name: Lint with ruff & yamllint
         run: |
@@ -138,4 +141,11 @@ jobs:
       - name: Test with pytest
         run: |
           PYTHONUTF8=1 JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
+
+      - name: Beta test on Python beta
+        if: env.python_beta_on == matrix.python-version
+        run: |
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1 \
+            PYTHONUTF8=1 JUPYTER_PLATFORM_DIRS=1 uv \
+            run --group dev --python=python${{ env.python_beta }} pytest
 ...
