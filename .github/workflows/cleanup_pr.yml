@@ -1,9 +1,5 @@
 ---
-# vim:set sw=2 ts=8 et fileencoding=utf8:
-# SPDX-License-Identifier: BSD-2-Clause
-# SPDX-FileCopyrightText: 2026 Сергей Леонтьев (leo@sai.msu.ru)
-
-name: Очистка PR
+name: Clean PR
 
 # https://github.com/marketplace/actions/clean-cache
 # https://github.com/OpenGrabeso/clean-cache
