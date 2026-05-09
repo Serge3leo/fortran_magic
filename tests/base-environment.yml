@@ -27,6 +27,7 @@ dependencies:
   # documentation.ipynb dependencies:
   - blas
   - lapack
+  - mkl
   # Jupyter Lab/Notebbok for manual testing:
   # - jupyter             # only: manual testing
   # - jupyterlab          # only: manual testing
