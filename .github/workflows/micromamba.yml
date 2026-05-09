@@ -59,7 +59,7 @@ jobs:
           cache-downloads: true
 
       - name: Setup `uv` with caches by default
-        uses: astral-sh/setup-uv@8.1.0
+        uses: astral-sh/setup-uv@v8.1.0
 
       - name: Lint with ruff & yamllint
         run: |
