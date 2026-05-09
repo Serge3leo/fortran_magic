@@ -115,8 +115,10 @@ jobs:
             echo "Try PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
             pkg-config --list-all | grep lapack || echo lapack not found
             pkg-config --exists lapack || echo "$? of ...--exists lapack"
-            head -1000 "$CONDA_PREFIX"/conda-meta/*bl?s* || echo "No *bl?s*"
-            head -1000 "$CONDA_PREFIX"/conda-meta/*lapack* || echo "No *lapack*"
+            #head -1000 "$CONDA_PREFIX"/conda-meta/*bl?s* || echo "No *bl?s*"
+            #head -1000 "$CONDA_PREFIX"/conda-meta/*lapack* || echo "No*lapack*"
+            ls -lR "$CONDA_PREFIX"/../../pkgs/*bl[ai]s* || echo "No *bl[ai]s*"
+            ls -lR "$CONDA_PREFIX"/../../pkgs/*lapack* || echo "No *lapack*"
             echo "Don't have lapack and mkl-sdl"
           fi
 
