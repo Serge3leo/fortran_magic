@@ -107,6 +107,12 @@ jobs:
             pkg-config --exists mkl-sdl || echo "$? of ...--exists mkl-sdl"
             pkg-config --list-all | grep lapack || echo lapack not found
             pkg-config --exists lapack || echo "$? of ...--exists lapack"
+            type pkg-config
+            PKG_CONFIG_PATH="$CONDA_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+            export PKG_CONFIG_PATH
+            echo "Try PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+            pkg-config --list-all | grep lapack || echo lapack not found
+            pkg-config --exists lapack || echo "$? of ...--exists lapack"
             echo "Don't have lapack and mkl-sdl"
           fi
 

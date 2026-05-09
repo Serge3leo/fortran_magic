@@ -50,6 +50,8 @@ def test_f2py_command(numpy_correct_compilers) -> None:
     https://numpy.org/doc/stable/f2py/f2py.getting-started.html#
     """
 
+    # FIXME: may be add "--freethreading-compatible" to
+    # `numpy_correct_compilers`, but `numpy_correct_compilers` seems broken
     freethreading_compatible = ["--freethreading-compatible"] if np.__version__ >= "2.1" else []
 
     tdir = "tests"
