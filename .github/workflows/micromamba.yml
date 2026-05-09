@@ -155,7 +155,5 @@ jobs:
 
       - name: Test with pytest
         run: |
-          ls -l documentation.ipynb || echo "Fail ls -l documentation.ipynb"
-          sum documentation.ipynb || echo "Fail sum documentation.ipynb"
-          JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
+          PYTHONUTF8=1 JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
 ...
