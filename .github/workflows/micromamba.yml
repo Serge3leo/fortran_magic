@@ -117,8 +117,9 @@ jobs:
             pkg-config --exists lapack || echo "$? of ...--exists lapack"
             #head -1000 "$CONDA_PREFIX"/conda-meta/*bl?s* || echo "No *bl?s*"
             #head -1000 "$CONDA_PREFIX"/conda-meta/*lapack* || echo "No*lapack*"
-            ls -lR "$CONDA_PREFIX"/../../pkgs/*bl[ai]s* || echo "No *bl[ai]s*"
-            ls -lR "$CONDA_PREFIX"/../../pkgs/*lapack* || echo "No *lapack*"
+            ls -la /Users/runner/micromamba/pkgs/. || echo No micromamba/pkgs
+            ls -lR /Users/runner/micromamba/pkgs/*bl[ai]s* || echo "No*bl[ai]s*"
+            ls -lR /Users/runner/micromamba/pkgs/*lapack* || echo "No*lapack*"
             echo "Don't have lapack and mkl-sdl"
           fi
 
