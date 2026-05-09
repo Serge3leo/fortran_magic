@@ -55,13 +55,6 @@ jobs:
           cache-environment: true
           cache-downloads: true
 
-#      - name: Workaround configure pkg-config path
-#        if: ${{ matrix.platform == 'win32' }}
-#        run: |
-#          PKG_CONFIG_PATH="$CONDA_PREFIX/Library/lib/pkgconfig;\
-#          $CONDA_PREFIX/lib/pkgconfig;$PKG_CONFIG_PATH"
-#          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
-
       - name: Lint with ruff & yamllint
         run: |
           if [ "${{ matrix.platform }}" != "win32" ]; then
@@ -162,8 +155,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          locale
-          LANG=C.UTF-8; export LANG
-          locale
+          ls -l documentation.ipynb || echo "Fail ls -l documentation.ipynb"
+          sum documentation.ipynb || echo "Fail sum documentation.ipynb"
           JUPYTER_PLATFORM_DIRS=1 uv run --group dev pytest
 ...
