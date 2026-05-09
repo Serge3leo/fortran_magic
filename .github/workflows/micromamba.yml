@@ -27,7 +27,7 @@ jobs:
 
           - os: "windows"
             platform: "win32"
-            os_pkgs: "m2w64-gcc-fortran mkl-sdl"
+            os_pkgs: "m2w64-gcc-fortran mkl-devel"
 
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
