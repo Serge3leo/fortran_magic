@@ -27,7 +27,7 @@ jobs:
 
           - os: "windows"
             platform: "win32"
-            os_pkgs: "m2w64-gcc-fortran"
+            os_pkgs: "m2w64-gcc-fortran mkl"
 
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}-latest
@@ -141,9 +141,6 @@ jobs:
             fib1.fib(a)
             print(a)
             '
-
-          python -m numpy.f2py --verbose --help-link blas
-          python -m numpy.f2py --verbose --help-link lapack
 
           if pkg-config --exists blas && pkg-config --exists lapack; then
             python -m numpy.f2py --backend meson --verbose \
