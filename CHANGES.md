@@ -1,24 +1,11 @@
 # Changelog
 
-## 1.0.1 / 2026-05-10
-
-- Python 3.15 ready (CI tests for 3.15.0b1 or above).
-- Docs: the issue of migration to free-threading Python is described (use the
-  `--freethreading-compatible` option).
-- Docs: `meson` semantics of the `--link` option is described.
-- CI: bump version of `checkout@v6` and `setup-micromamba@v3` (upgrade to Node
-  24).
-- CI: cache `micromamba` and `uv`.
-- CI: add configuration files for optional pre-commit checks.
-- Tests: don't skip `test_documentation_ipynb.py` for `ubuntu-latest` and
-  `windows-latest`.
-- Tests: repair irrelevant warnings about GIL.
-
-## 1.0 / 2025-12-24
+## 1.0 / 2026-05-10
 
 - Switch packaging to `pyproject.toml` with Hatchling and embed pytest config.
 - Drop legacy distutils backend and require Meson for f2py builds.
-- Support Python 3.10 through 3.14.
+- Support Python 3.10 through 3.14 (3.15 ready, CI tests for 3.15.0b1 or
+  above).
 - Convert README and changelog to Markdown.
 - Update release automation to build/publish with `uv`.
 - Stabilize IPython cache handling and test isolation.
@@ -29,8 +16,11 @@
 - Fix README test parser edge case for missing prefixes.
 - Direct dependencies on meson and ninja simplify installation and
   configuration.
-- The ability to open and try the documentation notebook in Google
-  Colab or GitHub Codespace without a local installation.
+- The ability to open and try the documentation notebook in Google Colab or
+  GitHub Codespace without a local installation.
+- Fix documentation for free-threading Python.
+- Fix documentation for `meson` semantics of the `--link` option.
+- Fix CI for Node24.js.
 
 ## 0.9 / 2024-05-27
 
