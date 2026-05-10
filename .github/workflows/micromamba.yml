@@ -159,7 +159,9 @@ jobs:
           if [ "${{ matrix.explicit_test }}" == "true" ]; then
             echo "Native: `< native_fortran.txt`"
             echo "Explicit: `< explicit_fortran.txt`"
-            cmp native_fortran.txt explicit_fortran.txt && exit 1
+            if cmp native_fortran.txt explicit_fortran.txt; then
+              exit 1
+            fi
           fi
 
       - name: Beta test on Python beta
@@ -172,7 +174,9 @@ jobs:
             if [ "${{ matrix.explicit_test }}" == "true" ]; then
               echo "Native: `< native_fortran.txt`"
               echo "Explicit: `< explicit_fortran.txt`"
-              cmp native_fortran.txt explicit_fortran.txt && exit 1
+              if cmp native_fortran.txt explicit_fortran.txt; then
+                exit 1
+              fi
             fi
           else
             echo "Unsuitable gcc for build of NumPy"  # FIXME
