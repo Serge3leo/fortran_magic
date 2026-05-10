@@ -46,7 +46,7 @@ jobs:
           - os: "windows-latest"
             python-version: "3.14"
             platform: "win32"
-            os_pkgs: "flang m2w64-gcc-fortran mkl-devel"
+            os_pkgs: "flang flang-rt_win-64 m2w64-gcc-fortran mkl-devel"
             explicit_test: true
 
     name: ${{ matrix.platform }} py${{ matrix.python-version }}
